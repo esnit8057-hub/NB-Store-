@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TechDroid - Neon App Store</title>
+    <style>
+        :root {
+            --neon-blue: #0ff0fc;
+            --neon-pink: #ff00ff;
+            --neon-purple: #bf00ff;
+            --neon-green: #00ff9d;
+            --dark-bg: #0a0a16;
+            --darker-bg: #050510;
+            --card-bg: rgba(15, 15, 35, 0.8);
+            --text-light: #ffffff;
+            --border-radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker-bg), var(--dark-bg));
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            padding: 0 15px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Header */
+        header {
+            background: rgba(10, 10, 30, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo img {
+            height: 40px;
+            width: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+            filter: drop-shadow(0 0 8px var(--neon-blue));
+        }
+
+        .logo h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .donate-btn {
+            background: transparent;
+            color: var(--neon-pink);
+            border: 1px solid var(--neon-pink);
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-shadow: 0 0 5px var(--neon-pink);
+        }
+
+        /* Search and Filter */
+        .search-section {
+            padding: 20px 0;
+            background: rgba(5, 5, 20, 0.5);
+        }
+
+        .search-filter-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 45px 14px 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--neon-blue);
+            border-radius: 25px;
+            font-size: 1rem;
+            color: var(--text-light);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--neon-blue);
+        }
+
+        .category-filter {
+            width: 100%;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 14px 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--neon-green);
+            border-radius: 25px;
+            font-size: 1rem;
+            color: var(--text-light);
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.3);
+        }
+
+        /* App List */
+        .app-list-section {
+            padding: 20px 0 80px 0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--neon-blue);
+            font-weight: 700;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .apps-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .app-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+        }
+
+        .app-card-content {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: cover;
+            flex-shrink: 0;
+            filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.5));
+        }
+
+        .app-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .app-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .app-subtitle {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .app-category {
+            display: inline-block;
+            background: rgba(191, 0, 255, 0.2);
+            color: var(--neon-purple);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            border: 1px solid var(--neon-purple);
+        }
+
+        .download-btn {
+            background: transparent;
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            border-radius: 15px;
+            padding: 8px 14px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-shadow: 0 0 5px var(--neon-green);
+            flex-shrink: 0;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 50px 20px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .no-results-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--neon-blue);
+            filter: drop-shadow(0 0 10px var(--neon-blue));
+        }
+
+        .no-results h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        /* App Details */
+        .app-details {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--darker-bg);
+            z-index: 1000;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .details-header {
+            background: rgba(10, 10, 30, 0.95);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .details-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            color: var(--neon-blue);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        .details-content {
+            padding: 20px 0;
+        }
+
+        .app-hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .app-hero-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            object-fit: cover;
+            filter: drop-shadow(0 0 15px var(--neon-blue));
+        }
+
+        .app-hero-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .app-hero-subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 12px;
+        }
+
+        .app-hero-category {
+            display: inline-block;
+            background: rgba(191, 0, 255, 0.2);
+            color: var(--neon-purple);
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid var(--neon-purple);
+            margin-bottom: 15px;
+        }
+
+        .hero-download-btn {
+            background: transparent;
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            border-radius: 20px;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-shadow: 0 0 5px var(--neon-green);
+            margin-top: 10px;
+        }
+
+        .app-description {
+            margin-bottom: 25px;
+        }
+
+        .description-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        .description-text {
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.9);
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .app-permissions {
+            margin-bottom: 25px;
+        }
+
+        .permissions-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        .permissions-text {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .app-screenshots {
+            margin-bottom: 25px;
+        }
+
+        .screenshots-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        .screenshots-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .screenshot {
+            height: 180px;
+            border-radius: 12px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .app-rating {
+            margin-bottom: 30px;
+        }
+
+        .rating-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        .rating-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .stars {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .star {
+            font-size: 2rem;
+            color: #444;
+            cursor: pointer;
+        }
+
+        .star.active {
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+
+        .rating-text {
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(5, 5, 20, 0.8);
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 30px;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .footer-logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 12px 20px;
+            border-radius: 25px;
+            color: white;
+            z-index: 1100;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            transition: transform 0.3s ease;
+            background: var(--card-bg);
+            border: 1px solid var(--neon-blue);
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 255, 255, 0.2);
+            border-left: 4px solid var(--neon-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Exit Confirmation */
+        .exit-confirm {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .exit-modal {
+            background: var(--card-bg);
+            border: 1px solid var(--neon-pink);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            text-align: center;
+            max-width: 300px;
+            margin: 20px;
+            box-shadow: 0 0 30px var(--neon-pink);
+        }
+
+        .exit-modal h3 {
+            margin-bottom: 15px;
+            color: var(--neon-blue);
+        }
+
+        .exit-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .exit-btn {
+            padding: 10px 20px;
+            border: 1px solid;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .exit-yes {
+            background: transparent;
+            color: var(--neon-green);
+            border-color: var(--neon-green);
+        }
+
+        .exit-no {
+            background: transparent;
+            color: var(--neon-pink);
+            border-color: var(--neon-pink);
+        }
+    </style>
+</head>
+<body>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Exit Confirmation -->
+    <div id="exitConfirm" class="exit-confirm">
+        <div class="exit-modal">
+            <h3>Exit TechDroid?</h3>
+            <p>Are you sure you want to exit the app?</p>
+            <div class="exit-buttons">
+                <button id="exitYes" class="exit-btn exit-yes">Yes</button>
+                <button id="exitNo" class="exit-btn exit-no">No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App List View -->
+    <div id="mainView" class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <img id="storeLogo" src="" alt="TechDroid Logo">
+                    <h1 id="storeName">TechDroid</h1>
+                </div>
+                <button id="donateBtn" class="donate-btn">Donate</button>
+            </div>
+        </header>
+
+        <section class="search-section">
+            <div class="search-filter-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search apps...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="category-filter">
+                    <select id="categoryFilter" class="filter-select">
+                        <option value="all">All Categories</option>
+                        <option value="App">Apps</option>
+                        <option value="Game">Games</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="app-list-section">
+            <h2 class="section-title" id="sectionTitle">Featured Apps</h2>
+            <div class="apps-grid" id="appsGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-logo">TechDroid</div>
+                <p class="footer-text">Discover the best apps and games for your Android device. All apps are carefully curated for quality and security.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- App Details View -->
+    <div id="appDetails" class="app-details">
+        <div class="details-header">
+            <div class="container">
+                <div class="details-header-content">
+                    <button id="backBtn" class="back-btn">← Back</button>
+                    <h2>App Details</h2>
+                    <div style="width: 60px;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="details-content">
+                <div class="app-hero">
+                    <img id="detailAppLogo" src="" alt="App Logo" class="app-hero-logo">
+                    <h1 id="detailAppTitle" class="app-hero-title">App Title</h1>
+                    <p id="detailAppSubtitle" class="app-hero-subtitle">App Subtitle</p>
+                    <span id="detailAppCategory" class="app-hero-category">Category</span>
+                    <button id="detailDownloadBtn" class="hero-download-btn">Download</button>
+                </div>
+
+                <div class="app-description">
+                    <h3 class="description-title">Description</h3>
+                    <p id="detailAppDescription" class="description-text">App description will appear here.</p>
+                </div>
+
+                <div class="app-permissions" id="permissionsSection">
+                    <h3 class="permissions-title">Permissions</h3>
+                    <p id="detailAppPermissions" class="permissions-text">No special permissions required.</p>
+                </div>
+
+                <div class="app-screenshots" id="screenshotsSection">
+                    <h3 class="screenshots-title">Screenshots</h3>
+                    <div class="screenshots-container" id="screenshotsContainer">
+                        <!-- Screenshots will be populated here -->
+                    </div>
+                </div>
+
+                <div class="app-rating">
+                    <h3 class="rating-title">Rate this app</h3>
+                    <div class="rating-container">
+                        <div class="stars" id="starsContainer">
+                            <span class="star" data-rating="1">★</span>
+                            <span class="star" data-rating="2">★</span>
+                            <span class="star" data-rating="3">★</span>
+                            <span class="star" data-rating="4">★</span>
+                            <span class="star" data-rating="5">★</span>
+                        </div>
+                        <p class="rating-text" id="ratingText">Tap a star to rate this app</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration - REPLACE WITH YOUR FIREBASE CONFIG
+        const firebaseConfig = {
+  apiKey: "AIzaSyCbE3gfPBZBoLiMoOFNBZjCLaRExkepOpk",
+  authDomain: "real-play-store.firebaseapp.com",
+  databaseURL: "https://real-play-store-default-rtdb.firebaseio.com",
+  projectId: "real-play-store",
+  storageBucket: "real-play-store.firebasestorage.app",
+  messagingSenderId: "334166452864",
+  appId: "1:334166452864:web:c3eba064592293462d1465"
+};
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // DOM Elements
+        const mainView = document.getElementById('mainView');
+        const appDetails = document.getElementById('appDetails');
+        const backBtn = document.getElementById('backBtn');
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const appsGrid = document.getElementById('appsGrid');
+        const sectionTitle = document.getElementById('sectionTitle');
+        const donateBtn = document.getElementById('donateBtn');
+        const notification = document.getElementById('notification');
+        const exitConfirm = document.getElementById('exitConfirm');
+        const exitYes = document.getElementById('exitYes');
+        const exitNo = document.getElementById('exitNo');
+        const storeName = document.getElementById('storeName');
+        const storeLogo = document.getElementById('storeLogo');
+
+        // App detail elements
+        const detailAppLogo = document.getElementById('detailAppLogo');
+        const detailAppTitle = document.getElementById('detailAppTitle');
+        const detailAppSubtitle = document.getElementById('detailAppSubtitle');
+        const detailAppCategory = document.getElementById('detailAppCategory');
+        const detailDownloadBtn = document.getElementById('detailDownloadBtn');
+        const detailAppDescription = document.getElementById('detailAppDescription');
+        const detailAppPermissions = document.getElementById('detailAppPermissions');
+        const permissionsSection = document.getElementById('permissionsSection');
+        const screenshotsSection = document.getElementById('screenshotsSection');
+        const screenshotsContainer = document.getElementById('screenshotsContainer');
+        const starsContainer = document.getElementById('starsContainer');
+        const ratingText = document.getElementById('ratingText');
+
+        // State
+        let currentAppId = null;
+        let apps = [];
+        let filteredApps = [];
+        let upiId = '';
+        let userRating = 0;
+
+        // Initialize the app
+        function init() {
+            loadStoreSettings();
+            loadApps();
+            loadUpiId();
+            setupEventListeners();
+            setupBackButton();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            searchInput.addEventListener('input', filterApps);
+            categoryFilter.addEventListener('change', filterApps);
+            backBtn.addEventListener('click', goBack);
+            donateBtn.addEventListener('click', handleDonate);
+            detailDownloadBtn.addEventListener('click', handleDownload);
+            exitYes.addEventListener('click', exitApp);
+            exitNo.addEventListener('click', hideExitConfirm);
+            
+            // Star rating
+            starsContainer.addEventListener('click', handleStarRating);
+            
+            // App card clicks
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.app-card')) {
+                    const appCard = e.target.closest('.app-card');
+                    if (!e.target.classList.contains('download-btn')) {
+                        const appId = appCard.dataset.id;
+                        openAppDetails(appId);
+                    }
+                }
+                
+                if (e.target.classList.contains('download-btn')) {
+                    const appCard = e.target.closest('.app-card');
+                    const appId = appCard.dataset.id;
+                    handleDownloadFromList(appId);
+                }
+            });
+        }
+
+        // Setup Android back button
+        function setupBackButton() {
+            // Prevent default back behavior
+            window.history.pushState(null, null, window.location.href);
+            
+            // Handle back button
+            window.addEventListener('popstate', function(event) {
+                window.history.pushState(null, null, window.location.href);
+                handleBackButton();
+            });
+
+            // Initial push to prevent immediate back
+            window.history.pushState(null, null, window.location.href);
+        }
+
+        // Handle back button press
+        function handleBackButton() {
+            if (appDetails.style.display === 'block') {
+                // If in details view, go back to main
+                goBack();
+            } else {
+                // If in main view, show exit confirmation
+                showExitConfirm();
+            }
+        }
+
+        // Firebase Functions
+        function loadStoreSettings() {
+            database.ref('storeSettings').on('value', snapshot => {
+                const settings = snapshot.val();
+                if (settings) {
+                    storeName.textContent = settings.name || 'TechDroid';
+                    if (settings.logo) {
+                        storeLogo.src = settings.logo;
+                        storeLogo.alt = settings.name || 'TechDroid Logo';
+                    }
+                }
+            }, error => {
+                console.error('Error loading store settings:', error);
+                showNotification('Error loading store settings', 'error');
+            });
+        }
+
+        function loadApps() {
+            database.ref('apps').on('value', snapshot => {
+                apps = [];
+                const appsData = snapshot.val();
+                
+                if (appsData) {
+                    Object.keys(appsData).forEach(key => {
+                        apps.push({
+                            id: key,
+                            ...appsData[key]
+                        });
+                    });
+                }
+                
+                filteredApps = [...apps];
+                renderApps();
+            }, error => {
+                console.error('Error loading apps:', error);
+                showNotification('Error loading apps', 'error');
+                // Fallback to sample data if Firebase fails
+                loadSampleApps();
+            });
+        }
+
+        function loadUpiId() {
+            database.ref('upiId').on('value', snapshot => {
+                upiId = snapshot.val() || '';
+            }, error => {
+                console.error('Error loading UPI ID:', error);
+            });
+        }
+
+        function saveRating(appId, rating) {
+            // Generate a simple user ID (in a real app, you'd use Firebase Auth)
+            const userId = 'user_' + Math.random().toString(36).substr(2, 9);
+            
+            database.ref('ratings/' + appId + '/' + userId).set(rating)
+                .then(() => {
+                    ratingText.textContent = `Thanks for your ${rating} star rating!`;
+                    showNotification('Rating submitted!');
+                })
+                .catch(error => {
+                    console.error('Error saving rating:', error);
+                    showNotification('Failed to submit rating', 'error');
+                });
+        }
+
+        function loadRating(appId) {
+            database.ref('ratings/' + appId).once('value')
+                .then(snapshot => {
+                    const ratingData = snapshot.val();
+                    if (ratingData) {
+                        const ratings = Object.values(ratingData);
+                        if (ratings.length > 0) {
+                            const averageRating = ratings.reduce((sum, r) => sum + r, 0) / ratings.length;
+                            ratingText.textContent = `Average rating: ${averageRating.toFixed(1)} stars (${ratings.length} ratings)`;
+                        } else {
+                            ratingText.textContent = 'No ratings yet';
+                        }
+                    } else {
+                        ratingText.textContent = 'No ratings yet';
+                    }
+                    
+                    // Reset stars
+                    const stars = starsContainer.querySelectorAll('.star');
+                    stars.forEach(star => star.classList.remove('active'));
+                    userRating = 0;
+                })
+                .catch(error => {
+                    console.error('Error loading rating:', error);
+                    ratingText.textContent = 'Error loading ratings';
+                });
+        }
+
+        // Sample data fallback
+        function loadSampleApps() {
+            const sampleApps = [
+                {
+                    id: '1',
+                    title: 'Neon Player',
+                    subtitle: 'Music player with visual effects',
+                    logo: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiByeD0iMjAiIGZpbGw9IiMwZmYwZmMiLz4KPHN2ZyB4PSIyNSIgeT0iMjUiIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMwYTBhMTYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KPHBhdGggZD0iTTggMTZWNyA0IDQgMCAwIDEgOCAwdjkiLz4KPHJlY3QgeD0iMyIgeT0iMTIiIHdpZHRoPSIxOCIgaGVpZ2h0PSI4IiByeD0iNCIvPgo8L3N2Zz4KPC9zdmc+',
+                    description: 'Experience music like never before with Neon Player. Advanced audio processing with stunning visual effects that sync with your music.',
+                    permissions: 'Storage access for local files, Microphone for voice commands',
+                    category: 'App',
+                    downloadLink: 'https://play.google.com/store/apps/details?id=com.example.neonplayer',
+                    screenshots: [
+                        'https://via.placeholder.com/300x600/0ff0fc/0a0a16?text=Player+UI',
+                        'https://via.placeholder.com/300x600/ff00ff/0a0a16?text=Visual+Effects',
+                        'https://via.placeholder.com/300x600/00ff9d/0a0a16?text=Playlists'
+                    ]
+                }
+            ];
+            
+            apps = sampleApps;
+            filteredApps = [...sampleApps];
+            renderApps();
+        }
+
+        // Navigation functions
+        function goBack() {
+            showMainView();
+        }
+
+        function showMainView() {
+            mainView.style.display = 'block';
+            appDetails.style.display = 'none';
+        }
+
+        function openAppDetails(appId) {
+            const app = apps.find(a => a.id === appId);
+            if (!app) return;
+
+            currentAppId = appId;
+            
+            // Update app details
+            detailAppLogo.src = app.logo;
+            detailAppTitle.textContent = app.title;
+            detailAppSubtitle.textContent = app.subtitle;
+            detailAppCategory.textContent = app.category;
+            detailAppDescription.textContent = app.description;
+            detailDownloadBtn.setAttribute('data-download', app.downloadLink);
+            
+            // Permissions
+            if (app.permissions) {
+                detailAppPermissions.textContent = app.permissions;
+                permissionsSection.style.display = 'block';
+            } else {
+                permissionsSection.style.display = 'none';
+            }
+            
+            // Screenshots
+            if (app.screenshots && app.screenshots.length > 0) {
+                screenshotsContainer.innerHTML = app.screenshots.map(url => 
+                    `<img src="${url}" alt="Screenshot" class="screenshot">`
+                ).join('');
+                screenshotsSection.style.display = 'block';
+            } else {
+                screenshotsSection.style.display = 'none';
+            }
+            
+            // Load rating
+            loadRating(appId);
+            
+            // Show details view
+            mainView.style.display = 'none';
+            appDetails.style.display = 'block';
+        }
+
+        // App list functions
+        function renderApps() {
+            if (filteredApps.length === 0) {
+                appsGrid.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">📱</div>
+                        <h3>No apps found</h3>
+                        <p>Try adjusting your search or filter criteria</p>
+                    </div>
+                `;
+                return;
+            }
+
+            appsGrid.innerHTML = filteredApps.map(app => `
+                <div class="app-card" data-id="${app.id}">
+                    <div class="app-card-content">
+                        <img src="${app.logo}" alt="${app.title}" class="app-logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiByeD0iMTIiIGZpbGw9IiMwZmYwZmMiLz4KPC9zdmc+'">
+                        <div class="app-info">
+                            <h3 class="app-title">${app.title}</h3>
+                            <p class="app-subtitle">${app.subtitle}</p>
+                            <span class="app-category">${app.category}</span>
+                        </div>
+                        <button class="download-btn">Download</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterApps() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const category = categoryFilter.value;
+
+            filteredApps = apps.filter(app => {
+                const matchesSearch = app.title.toLowerCase().includes(searchTerm) || 
+                                     app.subtitle.toLowerCase().includes(searchTerm);
+                const matchesCategory = category === 'all' || app.category === category;
+                
+                return matchesSearch && matchesCategory;
+            });
+
+            // Update section title
+            if (searchTerm || category !== 'all') {
+                sectionTitle.textContent = `Search Results (${filteredApps.length})`;
+            } else {
+                sectionTitle.textContent = 'Featured Apps';
+            }
+
+            renderApps();
+        }
+
+        // Action handlers
+        function handleDownload() {
+            const downloadLink = detailDownloadBtn.getAttribute('data-download');
+            if (downloadLink) {
+                // Increment download count in Firebase
+                if (currentAppId) {
+                    const appRef = database.ref('apps/' + currentAppId);
+                    appRef.child('downloads').transaction(current => (current || 0) + 1);
+                }
+                
+                window.open(downloadLink, '_blank');
+                showNotification('Opening Play Store...');
+            }
+        }
+
+        function handleDownloadFromList(appId) {
+            const app = apps.find(a => a.id === appId);
+            if (app && app.downloadLink) {
+                // Increment download count in Firebase
+                const appRef = database.ref('apps/' + appId);
+                appRef.child('downloads').transaction(current => (current || 0) + 1);
+                
+                window.open(app.downloadLink, '_blank');
+                showNotification('Opening Play Store...');
+            }
+        }
+
+        function handleDonate() {
+            if (!upiId) {
+                showNotification('Donation feature is not available at the moment');
+                return;
+            }
+            
+            // Create UPI payment URL
+            const upiUrl = `upi://pay?pa=${upiId}&pn=TechDroid&mc=0000&tid=${Date.now()}&tr=TechDroidDonation&tn=Thank you for your support!&am=1&cu=INR`;
+            
+            // Try to open UPI app
+            window.location.href = upiUrl;
+            
+            // Fallback: Show UPI ID for manual payment
+            setTimeout(() => {
+                showNotification(`UPI ID: ${upiId}`);
+            }, 1000);
+        }
+
+        function handleStarRating(e) {
+            if (!e.target.classList.contains('star')) return;
+            if (!currentAppId) return;
+            
+            const rating = parseInt(e.target.getAttribute('data-rating'));
+            userRating = rating;
+            
+            // Update star display
+            const stars = starsContainer.querySelectorAll('.star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+            
+            // Save rating to Firebase
+            saveRating(currentAppId, rating);
+        }
+
+        // Exit functions
+        function showExitConfirm() {
+            exitConfirm.style.display = 'flex';
+        }
+
+        function hideExitConfirm() {
+            exitConfirm.style.display = 'none';
+        }
+
+        function exitApp() {
+            // In a real Android app, this would close the app
+            showNotification('App would exit here');
+            hideExitConfirm();
+        }
+
+        // Utility functions
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.style.borderColor = type === 'error' ? 'var(--neon-pink)' : 'var(--neon-blue)';
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+
+        // Initialize the application
+        init();
+
+        // Add back button listener for mobile browsers
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' || e.keyCode === 8) {
+                e.preventDefault();
+                handleBackButton();
+            }
+        });
+    </script>
+</body>
+</html>
