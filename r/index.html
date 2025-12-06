@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Play Store Redirect</title>
+</head>
+<body>
+    <script>
+        // Get app name from URL
+        var path = window.location.pathname;
+        var parts = path.split('/');
+        var appId = parts[parts.length - 1];
+        
+        // If app ID found, redirect to Play Store
+        if(appId && appId.length > 0 && appId !== 'index.html') {
+            window.location.href = 'https://play.google.com/store/apps/details?id=' + appId;
+        } else {
+            document.body.innerHTML = '<h3>How to use:</h3><p>Add package name after /r/</p><p>Example: <a href="/r/com.whatsapp">/r/com.whatsapp</a></p>';
+        }
+    </script>
+</body>
+</html>
